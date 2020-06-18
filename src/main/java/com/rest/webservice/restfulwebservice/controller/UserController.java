@@ -4,6 +4,7 @@ import java.net.URI;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -34,7 +35,15 @@ public class UserController {
 	@PostMapping(path = "/users")
 	public ResponseEntity<Object> createUser(@RequestBody User user) {
 		User savedUser = userService.save(user);
-		URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(savedUser.getId()).toUri();
-		return ResponseEntity.created(location).build();
+		/*
+		 * If URI of added resource to send in Response with CREATED status code
+		 */
+//		URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(savedUser.getId()).toUri();
+//		return ResponseEntity.created(location).build();
+		
+		/*
+		 * If only CREATED status code to be returned in Response
+		 */
+		return ResponseEntity.status(HttpStatus.CREATED).build();
 	}
 }
