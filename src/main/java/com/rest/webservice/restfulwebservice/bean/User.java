@@ -5,8 +5,12 @@ import java.time.LocalDate;
 import javax.validation.constraints.Past;
 import javax.validation.constraints.Size;
 
+import org.springframework.hateoas.RepresentationModel;
 
-public class User {
+/*
+ * extends RepresentationModel to add link functionality for particular user
+ */
+public class User extends RepresentationModel<User>{
 
 	private Integer id;
 	

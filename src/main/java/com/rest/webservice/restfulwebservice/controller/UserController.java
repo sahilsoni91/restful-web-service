@@ -6,6 +6,8 @@ import java.util.List;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.Link;
+import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -28,7 +30,12 @@ public class UserController {
 	
 	@GetMapping(path = "/users")
 	public List<User> retrieveAllUsers() {
-		return userService.findAll();
+		List<User> users = userService.findAll();
+		for(User user : users) {
+			Link link = WebMvcLinkBuilder.linkTo(UserController.class).slash(user.getId()).withSelfRel();
+			user.add(link);
+		}
+		return users;
 	}
 	
 	@GetMapping(path = "/users/{id}")
