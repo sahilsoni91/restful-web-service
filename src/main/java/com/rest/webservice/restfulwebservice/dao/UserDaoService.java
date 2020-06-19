@@ -2,6 +2,7 @@ package com.rest.webservice.restfulwebservice.dao;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import org.springframework.stereotype.Component;
@@ -38,6 +39,18 @@ public class UserDaoService {
 	public User findOne(int id) {
 		for(User user : users) {
 			if(user.getId() == id) {
+				return user;
+			}
+		}
+		return null;
+	}
+	
+	public User deleteById(int id) {
+		Iterator<User> itr = users.iterator();
+		while(itr.hasNext()) {
+			User user = itr.next();
+			if(user.getId() == id) {
+				itr.remove();
 				return user;
 			}
 		}
