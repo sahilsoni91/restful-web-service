@@ -1,5 +1,6 @@
 package com.rest.webservice.restfulwebservice.bean;
 
+import com.fasterxml.jackson.annotation.JsonFilter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
@@ -7,11 +8,12 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
  * Try use JsonIgnore on fields as later on if fields change then have to modify fields in JsonIgnoreProperties
  */
 //@JsonIgnoreProperties(value = {"field1"})
+@JsonFilter("filterBeanFilter")
 public class Filter {
 
 	private String field1;
 	private String field2;
-	@JsonIgnore
+//	@JsonIgnore
 	private String field3;
 	
 	public Filter(String field1, String field2, String field3) {
