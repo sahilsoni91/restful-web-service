@@ -19,8 +19,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import com.rest.webservice.restfulwebservice.bean.Post;
 import com.rest.webservice.restfulwebservice.bean.User;
 import com.rest.webservice.restfulwebservice.customexception.UserNotFoundException;
+import com.rest.webservice.restfulwebservice.dao.PostRepository;
 import com.rest.webservice.restfulwebservice.dao.UserDaoService;
 import com.rest.webservice.restfulwebservice.dao.UserRepository;
 
@@ -29,6 +31,9 @@ public class UserJPAController {
 
 	@Autowired
 	private UserRepository userRepository;
+	
+	@Autowired
+	private PostRepository postRepository;
 	
 	@GetMapping(path = "jpa/users")
 	public List<User> retrieveAllUsers() {
@@ -70,5 +75,41 @@ public class UserJPAController {
 	@DeleteMapping(path = "jpa/users/{id}")
 	public void deleteUser(@PathVariable int id) {
 		userRepository.deleteById(id);
+	}
+	
+	@PostMapping(path = "jpa/users/{id}/posts")
+	public ResponseEntity<Object> createUser(@PathVariable int id, @RequestBody Post post) {
+		Optional<User> userOptional = userRepository.findById(id);
+		
+		if(!userOptional.isPresent()) {
+			throw new UserNotFoundException("id : " + id);
+		}
+		
+		User user = userOptional.get();
+		
+		post.setUser(user);
+		
+		Post savedPost = postRepository.save(post);
+		/*
+		 * If only CREATED status code to be returned in Response
+		 */
+//		return ResponseEntity.status(HttpStatus.CREATED).build();
+		
+		/*
+		 * If URI of added resource to send in Response with CREATED status code
+		 */
+		URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(savedPost.getId()).toUri();
+		return ResponseEntity.created(location).build();
+	}
+	
+	@GetMapping(path = "jpa/users/{id}/posts")
+	public List<Post> retrieveAllPosts(@PathVariable int id) {
+		Optional<User> userOptional = userRepository.findById(id);
+		
+		if(!userOptional.isPresent()) {
+			throw new UserNotFoundException("id : " + id);
+		}
+		
+		return userOptional.get().getPosts();
 	}
 }
